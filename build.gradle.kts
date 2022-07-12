@@ -1,10 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    id("org.springframework.boot") version "2.7.1"
+    val kotlinVersion = "1.6.21"
+
+    id("org.springframework.boot") version "2.5.14"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.spring") version "1.6.21"
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
 }
 
 group = "com.zito"
@@ -16,10 +19,26 @@ repositories {
 }
 
 dependencies {
+    val swaggerVersion = "3.0.0"
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("io.springfox:springfox-boot-starter:${swaggerVersion}")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+tasks.getByName<BootJar>("bootJar") {
+    archiveFileName.set("app.jar")
+}
+
+tasks.getByName<Jar>("jar") {
+    archiveFileName.set("app.jar")
+}
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
 }
 
 tasks.withType<KotlinCompile> {
