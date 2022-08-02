@@ -19,8 +19,6 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.StringRedisSerializer
-import org.springframework.vault.annotation.VaultPropertySource
-import org.springframework.vault.config.EnvironmentVaultConfiguration
 
 
 @Configuration
@@ -65,17 +63,12 @@ class RedisConfig(
     fun redisContainer(): RedisMessageListenerContainer {
         val container = RedisMessageListenerContainer()
         container.setConnectionFactory(redisConnectionFactory())
-        container.addMessageListener(messageListenerAdapter(), topic()!!)
+        container.addMessageListener(messageListenerAdapter(), topic())
         return container
     }
 
     @Bean
-    fun topic(): ChannelTopic? {
+    fun topic(): ChannelTopic {
         return ChannelTopic("LikeTopic")
     }
-
-    @VaultPropertySource(value = ["\${vault.path.redis}"], propertyNamePrefix = "cache.redis.")
-    @Import(EnvironmentVaultConfiguration::class)
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    private class VaultRedisWriteConfig
 }
